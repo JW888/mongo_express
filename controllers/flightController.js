@@ -1,5 +1,4 @@
 import asyncHandler from 'express-async-handler'
-import flights from '../data/flights.js'
 import Flight from '../models/flightModel.js'
 
 
@@ -26,5 +25,24 @@ const getFlights = asyncHandler(async (req, res) => {
     res.json(flights)
 })
 
+const deleteFlight =  asyncHandler(async (req, res) =>{
 
-export { addFlights, getFlights }
+    // const flight = await Flight.find(req.body)
+    // res.json(flight[0])
+    // Flight.findByIdAndDelete("600fd7b83675d634532d1660")
+    // console.log(`Flight ${flight[0]._id} deleted.`)
+
+    Flight.findByIdAndDelete(req.body._id, (error, data) => {
+        if (error) {
+          return next(error);
+        } else {
+          res.status(200).json({
+            msg: data
+          })
+        }
+      })
+
+})
+
+
+export { addFlights, getFlights, deleteFlight }
