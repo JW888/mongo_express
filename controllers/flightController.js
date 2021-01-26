@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import Flight from '../models/flightModel.js'
+import ErrorResponse from '../utils/errorHandler.js'
 
 
 // @desc    Create new flight
@@ -18,31 +19,63 @@ const addFlights = asyncHandler(async (req, res) => {
 
 
 // @desc Fetch all flights
-// @route GET /flight
+// @route GET /flights
 // @access Public
 const getFlights = asyncHandler(async (req, res) => {
     const flights = await Flight.find({})
     res.json(flights)
 })
 
-const deleteFlight =  asyncHandler(async (req, res) =>{
 
-    // const flight = await Flight.find(req.body)
-    // res.json(flight[0])
-    // Flight.findByIdAndDelete("600fd7b83675d634532d1660")
-    // console.log(`Flight ${flight[0]._id} deleted.`)
+// @desc      Delete course
+// @route     DELETE /flights/:id
+// @access    Private
+const deleteFlight =  asyncHandler(async (req, res, next) =>{
 
-    Flight.findByIdAndDelete(req.body._id, (error, data) => {
-        if (error) {
-          return next(error);
-        } else {
-          res.status(200).json({
-            msg: data
-          })
-        }
-      })
+    const flight = await Flight.findById(req.params.id);
+    console.log(flight)
+
+    if (!flight) {
+      return next(
+        new ErrorResponse(`No flight with the id of ${req.params.id}`, 404)
+      );
+    }
+
+    await flight.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      data: {}
+    });
 
 })
 
 
-export { addFlights, getFlights, deleteFlight }
+// @desc      Update course
+// @route     PUT /flights/:id
+// @access    Private
+const updateFlight = asyncHandler(async (req, res, next) => {
+  let flight = await Flight.findById(req.params.id);
+
+  if (!flight) {
+    return next(
+      new ErrorResponse(`No flight with the id of ${req.params.id}`, 404)
+    );
+  }
+
+  flight = await Flight.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false
+  });
+
+  flight.save();
+
+  res.status(200).json({
+    success: true,
+    data: flight
+  });
+});
+
+
+export { addFlights, getFlights, deleteFlight, updateFlight }
