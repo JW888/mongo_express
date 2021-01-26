@@ -5,9 +5,9 @@ const crudSchema = mongoose.Schema({
     comment: { type: String, required: true },
   }, {
     timestamps: true
-  })
+})
 
 
-  const Crud = mongoose.model('Crud', crudSchema)
+const Crud = mongoose.model('Crud', crudSchema)
 
-  export default Crud
+export default Crud
