@@ -27,7 +27,7 @@ const getFlights = asyncHandler(async (req, res) => {
 })
 
 
-// @desc      Delete course
+// @desc      Delete flight
 // @route     DELETE /flights/:id
 // @access    Private
 const deleteFlight =  asyncHandler(async (req, res, next) =>{
@@ -51,7 +51,7 @@ const deleteFlight =  asyncHandler(async (req, res, next) =>{
 })
 
 
-// @desc      Update course
+// @desc      Update flight
 // @route     PUT /flights/:id
 // @access    Private
 const updateFlight = asyncHandler(async (req, res, next) => {
@@ -62,16 +62,6 @@ const updateFlight = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`No flight with the id of ${req.params.id}`, 404)
     );
   }
-
-  // // Make sure user is course owner
-  // if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
-  //   return next(
-  //     new ErrorResponse(
-  //       `User ${req.user.id} is not authorized to update course ${course._id}`,
-  //       401
-  //     )
-  //   );
-  // }
 
   flight = await Flight.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
